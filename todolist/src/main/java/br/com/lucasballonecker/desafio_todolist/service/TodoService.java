@@ -5,20 +5,21 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import br.com.lucasballonecker.desafio_todolist.dto.Dto;
+import br.com.lucasballonecker.desafio_todolist.dto.Dtoupdate;
 import br.com.lucasballonecker.desafio_todolist.entity.Todo;
 import br.com.lucasballonecker.desafio_todolist.repository.TodoRepository;
 
 @Service
 public class TodoService {
-
 	private TodoRepository todorepository;
 
 	public TodoService(TodoRepository todorepository) {
 		this.todorepository = todorepository;
 	}
 
-	public List<Todo> create(Todo todo) {
-		todorepository.save(todo);
+	public List<Todo> create(Dto dto) {
+		todorepository.save(new Todo(dto));
 		return list();
 	}
 
@@ -27,8 +28,9 @@ public class TodoService {
 		return todorepository.findAll(sort);
 	}
 
-	public List<Todo> update(Todo todo) {
-		todorepository.save(todo);
+	public List<Todo> update(Dtoupdate dtou) {
+		var dto = todorepository.getReferenceById(dtou.id());
+		dto.atualizarInformacoes(dtou);
 		return list();
 	}
 

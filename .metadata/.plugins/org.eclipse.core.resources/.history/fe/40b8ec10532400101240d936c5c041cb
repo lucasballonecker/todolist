@@ -1,0 +1,16 @@
+package br.com.lucasballonecker.desafio_todolist.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record Dtoupdate(
+		@NotNull
+		Long id,
+		@NotBlank
+		String nome,
+		@NotBlank
+		String descricao,
+		Boolean realizado,
+		Integer prioridade) {
+
+}

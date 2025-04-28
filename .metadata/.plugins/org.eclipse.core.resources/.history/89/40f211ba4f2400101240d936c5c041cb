@@ -1,0 +1,42 @@
+package br.com.lucasballonecker.desafio_todolist.service;
+
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import br.com.lucasballonecker.desafio_todolist.dto.Dto;
+import br.com.lucasballonecker.desafio_todolist.entity.Todo;
+import br.com.lucasballonecker.desafio_todolist.repository.TodoRepository;
+
+@Service
+public class TodoService {
+	private Todo todo;
+	private TodoRepository todorepository;
+
+	public TodoService(TodoRepository todorepository, Todo todo) {
+		this.todorepository = todorepository;
+		this.todo = todo;
+	}
+
+	public List<Todo> create(Dto dto) {
+		todorepository.save(new Todo(dto));
+		return list();
+	}
+
+	public List<Todo> list() {
+		Sort sort = Sort.by("prioridade").descending().and(Sort.by("nome").ascending());
+		return todorepository.findAll(sort);
+	}
+
+	public List<Todo> update(Long id) {
+		var dto = todorepository.getReferenceById(id);
+		todo.atualizarInformacoes(dto);
+		return list();
+	}
+
+	public List<Todo> delete(Long id) {
+		todorepository.deleteById(id);
+		return list(); 
+	}
+}

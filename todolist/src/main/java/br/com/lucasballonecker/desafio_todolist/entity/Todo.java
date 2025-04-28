@@ -1,5 +1,9 @@
 package br.com.lucasballonecker.desafio_todolist.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import br.com.lucasballonecker.desafio_todolist.dto.Dto;
+import br.com.lucasballonecker.desafio_todolist.dto.Dtoupdate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "todos")
 public class Todo {
@@ -17,17 +22,17 @@ public class Todo {
 	private String nome;
 	@NotBlank
 	private String descricao;
-	private boolean realizado;
-	private int prioridade;
+	private Boolean realizado;
+	private Integer prioridade;
 
 	public Todo() {
 	}
 
-	public Todo(String nome, String descricao, boolean realizado, int prioridade) {
-		this.nome = nome;
-		this.descricao = descricao;
-		this.realizado = realizado;
-		this.prioridade = prioridade;
+	public Todo(Dto dto) {
+		this.nome = dto.nome();
+		this.descricao = dto.descricao();
+		this.realizado = dto.realizado();
+		this.prioridade= dto.prioridade();
 	}
 
 	public Long getId() {
@@ -68,6 +73,27 @@ public class Todo {
 
 	public void setPrioridade(int prioridade) {
 		this.prioridade = prioridade;
+	}
+	
+	public void atualizarInformacoes(Dtoupdate dtou) {
+		if (dtou.nome() != null) {
+			this.nome = dtou.nome();
+		}
+		
+		if (dtou.descricao() != null) {
+			this.descricao = dtou.descricao();
+		}
+		
+		if (dtou.realizado() != null) {
+			this.realizado = dtou.realizado();
+		}
+		
+		if (dtou.prioridade() != null) {
+			this.prioridade = dtou.prioridade();
+		}
+		
+		
+		
 	}
 
 }

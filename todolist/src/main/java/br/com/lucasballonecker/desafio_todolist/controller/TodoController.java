@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lucasballonecker.desafio_todolist.dto.Dto;
+import br.com.lucasballonecker.desafio_todolist.dto.Dtoupdate;
 import br.com.lucasballonecker.desafio_todolist.entity.Todo;
 import br.com.lucasballonecker.desafio_todolist.service.TodoService;
 import jakarta.validation.Valid;
@@ -26,8 +28,8 @@ public class TodoController {
 	}
 	
 	@PostMapping
-	List<Todo> create(@RequestBody @Valid Todo todo) {
-		return todoservice.create(todo);
+	List<Todo> create(@RequestBody @Valid Dto dto) {
+		return todoservice.create(dto);
 	}
 
 	@GetMapping
@@ -35,9 +37,9 @@ public class TodoController {
 		return todoservice.list();
 	}
 
-	@PutMapping
-	List<Todo> update(@RequestBody Todo todo) {
-		return todoservice.update(todo);
+	@PutMapping()
+	List<Todo> update(@RequestBody  Dtoupdate dtou) {
+		return todoservice.update(dtou);
 	}
 
 	@DeleteMapping("{id}")

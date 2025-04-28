@@ -1,0 +1,6 @@
+package br.com.lucasballonecker.desafio_todolist.dto;
+
+public record Dto(String nome, String descricao, boolean realizado, int prioridade) {
+	
+	
+}
