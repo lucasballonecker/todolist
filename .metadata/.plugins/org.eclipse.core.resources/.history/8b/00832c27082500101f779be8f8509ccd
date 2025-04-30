@@ -1,0 +1,6 @@
+package br.com.lucasballonecker.desafio_todolist.service;
+
+public interface UserDetailsService implements UserDetailsService {
+
+	
+}

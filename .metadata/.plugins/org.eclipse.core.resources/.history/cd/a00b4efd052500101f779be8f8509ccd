@@ -1,0 +1,5 @@
+package br.com.lucasballonecker.desafio_todolist.repository;
+
+public interface UserRepository {
+
+}

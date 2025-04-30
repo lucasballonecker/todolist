@@ -2,6 +2,7 @@ package br.com.lucasballonecker.desafio_todolist.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
 import br.com.lucasballonecker.desafio_todolist.dto.Dto;
 import br.com.lucasballonecker.desafio_todolist.dto.Dtoupdate;
 import jakarta.persistence.Entity;
