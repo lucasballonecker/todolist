@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 import br.com.lucasballonecker.desafio_todolist.dto.Dto;
-import br.com.lucasballonecker.desafio_todolist.dto.Dtoupdate;
+import br.com.lucasballonecker.desafio_todolist.dto.DtoUpdate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -76,7 +76,7 @@ public class Todo {
 		this.prioridade = prioridade;
 	}
 	
-	public void atualizarInformacoes(Dtoupdate dtou) {
+	public void atualizarInformacoes(DtoUpdate dtou) {
 		if (dtou.nome() != null) {
 			this.nome = dtou.nome();
 		}

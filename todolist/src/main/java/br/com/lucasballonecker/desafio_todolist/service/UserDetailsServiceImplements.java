@@ -1,5 +1,6 @@
 package br.com.lucasballonecker.desafio_todolist.service;	
 
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +19,7 @@ public class UserDetailsServiceImplements implements UserDetailsService  {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		 System.out.println("Tentando carregar usuário: " + username);
 		return userRepository.findByUsername(username)
 				.map(UserAuthenticated::new)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));

@@ -2,24 +2,28 @@ package br.com.lucasballonecker.desafio_todolist.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lucasballonecker.desafio_todolist.dto.DtoAuth;
 import br.com.lucasballonecker.desafio_todolist.service.AuthenticationService;
 
 @RestController()
 @RequestMapping("/authentication")
 public class AuthenticationController {
 	private final AuthenticationService authenticationService;
-	
+
 	public AuthenticationController(AuthenticationService authenticationService) {
 		this.authenticationService = authenticationService;
 	}
-	
+
 	@PostMapping()
-	public String authenticate(Authentication authentication) {
-		return authenticationService.authenticate(authentication);
+	public String authenticate(@RequestBody DtoAuth dados) {
+		Authentication authentication = authenticationService.authenticationRequest(dados);
+		String token = authenticationService.authenticate(authentication);
+		return token;
+
 	}
-	
 
 }

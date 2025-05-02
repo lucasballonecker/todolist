@@ -1,0 +1,100 @@
+package br.com.lucasballonecker.desafio_todolist;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.KeyFactory;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    private RSAPublicKey loadPublicKey(String filename) throws Exception {
+        String key = Files.readString(new ClassPathResource(filename).getFile().toPath(), StandardCharsets.UTF_8);
+        key = key.replace("-----BEGIN PUBLIC KEY-----", "")
+                 .replace("-----END PUBLIC KEY-----", "")
+                 .replaceAll("\\s+", "");
+        byte[] decoded = Base64.getDecoder().decode(key);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
+        return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(keySpec);
+    }
+
+    private RSAPrivateKey loadPrivateKey(String filename) throws Exception {
+        String key = Files.readString(new ClassPathResource(filename).getFile().toPath(), StandardCharsets.UTF_8);
+        key = key.replace("-----BEGIN PRIVATE KEY-----", "")
+                 .replace("-----END PRIVATE KEY-----", "")
+                 .replaceAll("\\s+", "");
+        byte[] decoded = Base64.getDecoder().decode(key);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
+        return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(keySpec);
+    }
+
+    @Bean
+    public RSAPublicKey rsaPublicKey() throws Exception {
+        return loadPublicKey("app2.key");
+    }
+
+    @Bean
+    public RSAPrivateKey rsaPrivateKey() throws Exception {
+        return loadPrivateKey("app.key"); 
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/authenticate", "/register", "/swagger-ui/**",
+            	    "/v3/api-docs/**")
+            		.permitAll().anyRequest().authenticated())
+            .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()))
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        return http.build();
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder(RSAPublicKey key) {
+        return NimbusJwtDecoder.withPublicKey(key).build();
+    }
+
+    @Bean
+    JwtEncoder jwtEncoder(RSAPublicKey key, RSAPrivateKey priv) {
+        var jwk = new RSAKey.Builder(key).privateKey(priv).build();
+        var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwks);
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); 
+    }
+    
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+}

@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.lucasballonecker.desafio_todolist.dto.Dto;
-import br.com.lucasballonecker.desafio_todolist.dto.Dtoupdate;
+import br.com.lucasballonecker.desafio_todolist.dto.DtoUpdate;
 import br.com.lucasballonecker.desafio_todolist.entity.Todo;
 import br.com.lucasballonecker.desafio_todolist.service.TodoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/todos")
+@SecurityRequirement(name = "Bearer Authentication")
 public class TodoController {
 	private TodoService todoservice;
 
@@ -38,7 +40,7 @@ public class TodoController {
 	}
 
 	@PutMapping()
-	List<Todo> update(@RequestBody  Dtoupdate dtou) {
+	List<Todo> update(@RequestBody  DtoUpdate dtou) {
 		return todoservice.update(dtou);
 	}
 

@@ -1,6 +1,8 @@
 package br.com.lucasballonecker.desafio_todolist;
 
 import java.nio.charset.StandardCharsets;
+
+
 import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
@@ -12,9 +14,12 @@ import java.util.Base64;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -23,14 +28,16 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+	
     private RSAPublicKey loadPublicKey(String filename) throws Exception {
         String key = Files.readString(new ClassPathResource(filename).getFile().toPath(), StandardCharsets.UTF_8);
         key = key.replace("-----BEGIN PUBLIC KEY-----", "")
@@ -60,13 +67,16 @@ public class SecurityConfig {
     public RSAPrivateKey rsaPrivateKey() throws Exception {
         return loadPrivateKey("app.key"); 
     }
+    
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth.requestMatchers("/authenticate").permitAll().anyRequest().authenticated())
-            .httpBasic(Customizer.withDefaults())
-            .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()));
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/authentication", "/register", "/swagger-ui/**",
+            	    "/v3/api-docs/**")
+            		.permitAll().anyRequest().authenticated())
+            .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()))
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
@@ -86,5 +96,10 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); 
+    }
+    
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }

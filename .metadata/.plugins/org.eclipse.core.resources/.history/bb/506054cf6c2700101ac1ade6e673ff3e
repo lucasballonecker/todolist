@@ -1,0 +1,55 @@
+package br.com.lucasballonecker.desafio_todolist;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import br.com.lucasballonecker.desafio_todolist.dto.Dto;
+import br.com.lucasballonecker.desafio_todolist.dto.DtoAuth;
+import br.com.lucasballonecker.desafio_todolist.dto.DtoRegister;
+import br.com.lucasballonecker.desafio_todolist.service.AuthenticationService;
+import br.com.lucasballonecker.desafio_todolist.service.RegisterService;
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+class DesafioTodolistApplicationTests {
+
+	@Autowired
+	private WebTestClient webTestClient;
+
+	@Autowired
+	private RegisterService registerService;
+
+	@Autowired
+	private AuthenticationService authenticationService;
+
+	private String jwtToken;
+
+	@BeforeEach
+	void setup() {
+		String username = "newtest" + System.currentTimeMillis();
+		String password = "1234";
+		registerService.register(new DtoRegister(username, password));
+		var auth = authenticationService.authenticationRequest(new DtoAuth(username, password));
+		jwtToken = authenticationService.authenticate(auth);
+	}
+
+	@Test
+	void testCreateTodoSuccess() {
+		var dto = new Dto("Todo 1", "Desc Todo 1 Up", true, 7);
+
+		webTestClient.post().uri("/todos").header("Authorization", "Bearer " + jwtToken).bodyValue(dto).exchange()
+				.expectStatus().isOk().expectBody().jsonPath("$[0].nome").isEqualTo(dto.nome()).jsonPath("$[0].descricao")
+				.isEqualTo(dto.descricao()).jsonPath("$[0].realizado").isEqualTo(dto.realizado()).jsonPath("$[0].prioridade")
+				.isEqualTo(dto.prioridade());
+	}
+
+	@Test
+	void testCreateTodoFailure() {
+		webTestClient.post().uri("/todos").header("Authorization", "Bearer " + jwtToken)
+				.bodyValue(new Dto("", null, false, 0)).exchange().expectStatus().isBadRequest();
+	}
+}

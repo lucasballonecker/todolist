@@ -1,0 +1,100 @@
+package br.com.lucasballonecker.desafio_todolist.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
+import br.com.lucasballonecker.desafio_todolist.dto.Dto;
+import br.com.lucasballonecker.desafio_todolist.dto.Dtoupdate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Entity
+@Table(name = "todos")
+public class Todo {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@NotBlank
+	private String nome;
+	@NotBlank
+	private String descricao;
+	private Boolean realizado;
+	private Integer prioridade;
+
+	public Todo() {
+	}
+
+	public Todo(Dto dto) {
+		this.nome = dto.nome();
+		this.descricao = dto.descricao();
+		this.realizado = dto.realizado();
+		this.prioridade= dto.prioridade();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public boolean isRealizado() {
+		return realizado;
+	}
+
+	public void setRealizado(boolean realizado) {
+		this.realizado = realizado;
+	}
+
+	public int getPrioridade() {
+		return prioridade;
+	}
+
+	public void setPrioridade(int prioridade) {
+		this.prioridade = prioridade;
+	}
+	
+	public void atualizarInformacoes(Dtoupdate dtou) {
+		if (dtou.nome() != null) {
+			this.nome = dtou.nome();
+		}
+		
+		if (dtou.descricao() != null) {
+			this.descricao = dtou.descricao();
+		}
+		
+		if (dtou.realizado() != null) {
+			this.realizado = dtou.realizado();
+		}
+		
+		if (dtou.prioridade() != null) {
+			this.prioridade = dtou.prioridade();
+		}
+		
+		
+		
+	}
+
+}

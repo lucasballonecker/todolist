@@ -1,0 +1,29 @@
+package br.com.lucasballonecker.desafio_todolist.service;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import br.com.lucasballonecker.desafio_todolist.dto.DtoAuth;
+
+@Service
+public class AuthenticationService {
+	 private final AuthenticationManager authenticationManager;
+	private JwtService jwtService;
+	
+
+	public AuthenticationService(AuthenticationManager authenticationManager,JwtService jwtService) {
+		this.authenticationManager = authenticationManager;
+		this.jwtService = jwtService;
+	}
+
+	public Authentication authenticationRequest(DtoAuth dados) {
+		Authentication authentication = new UsernamePasswordAuthenticationToken(dados.username(), dados.password());
+		return authenticationManager.authenticate(authentication);
+	}
+	
+	public String authenticate(Authentication authentication) {
+		return jwtService.generateToken(authentication);
+	}
+}

@@ -2,7 +2,7 @@ package br.com.lucasballonecker.desafio_todolist.dto;
 
 
 
-public record Dtoupdate(
+public record DtoUpdate(
 		Long id,
 		String nome,
 		String descricao,

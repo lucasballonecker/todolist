@@ -1,0 +1,12 @@
+package br.com.lucasballonecker.desafio_todolist.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record Dto(
+		@NotBlank
+		String nome,
+		@NotBlank
+		String descricao,
+		Boolean realizado,
+		Integer prioridade) {
+}
