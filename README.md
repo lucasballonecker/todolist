@@ -1,11 +1,7 @@
 
-```markdown
 # 📝 To-Do List API com Spring Boot & JWT
 
-![Spring Boot](https://img.shields.io/badge/spring--boot-3.4.5-brightgreen)
-![Java](https://img.shields.io/badge/java-24-blue)
-![JWT](https://img.shields.io/badge/security-jwt-orange)
-![License](https://img.shields.io/badge/license-MIT-green)
+<img src="https://img.shields.io/badge/spring--boot-3.4.5-brightgreen" alt="Spring Boot"> <img src="https://img.shields.io/badge/java-24-blue" alt="Java"> <img src="https://img.shields.io/badge/security-jwt-orange" alt="JWT"> <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
 
 API RESTful para gerenciamento de tarefas com autenticação JWT, desenvolvida em Spring Boot 3.
 
