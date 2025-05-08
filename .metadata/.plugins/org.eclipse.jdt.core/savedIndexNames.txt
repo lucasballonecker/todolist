@@ -95,8 +95,8 @@ INDEX VERSION 1.134+C:\Users\Lucas Ballonecker\Documents\Projetos\desafio-todoli
 273398322.index
 3143497631.index
 1973473982.index
-1294664353.index
 4186667290.index
+1294664353.index
 2397662475.index
 1069554313.index
 1943905897.index
@@ -112,8 +112,8 @@ INDEX VERSION 1.134+C:\Users\Lucas Ballonecker\Documents\Projetos\desafio-todoli
 2599268847.index
 2576517541.index
 4186500710.index
-2847284193.index
 1610289887.index
+2847284193.index
 1145422923.index
 3354911858.index
 3979228623.index
